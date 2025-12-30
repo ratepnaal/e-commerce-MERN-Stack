@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 import {router} from './routes/userRoute'
 import { seedInitialProducts } from "./services/productServices";
 import { productRouter } from "./routes/productRoute";
-
+import { cartRouter } from "./routes/cartRoute";
 const app = express();
 
 app.use(express.json());
 
 app.use("/users" , router);
 app.use("/products" , productRouter );
-
+app.use("/Cart" , cartRouter);
 
 const port = 3001;
 

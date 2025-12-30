@@ -63,6 +63,6 @@ export const Login = async ({email , password}:loginParams)=>{
 }
 
 const generatejwt = (data: any)=>{
-    return jwt.sign(data , "ok12bmw33158pp" , {expiresIn:'24'})
+    return jwt.sign(data ,"ok12bmw33158pp" , { expiresIn: '24h' })
 }
 
