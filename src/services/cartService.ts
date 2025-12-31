@@ -64,3 +64,47 @@ const updatedCart = await cart.save();
 return {data:updatedCart , statusCode:200}
 
 }
+
+interface IupdateItemInCart {
+    productId:any;
+    quintity:string;
+    userid: string;
+}
+
+export const updateItemInCart =  async({userid , productId , quintity} : IupdateItemInCart )=>{
+const cart = await getActiveCartForUser({userid});
+const existInCart = cart.items.find((p)=>p.product.toString() === productId);
+
+
+if(!existInCart){
+    return {data:"Items Already  Exist in Cart ! " , statusCode:400}
+}
+
+const product = await productModel.findById(productId);
+
+if(!product){
+    return {data:"Product Not Found ! " , statusCode:400}
+}
+
+if (product.stock < parseInt(quintity)){
+    return {data : "Low Stock For Items" , statusCode:400}; 
+}
+
+const othercardItems = cart.items.filter((p)=>p.product.toString() !== productId);
+
+let total = othercardItems.reduce((sum , product)=>{
+    sum+=product.quintity * product.unitPrice;
+    return sum;
+} , 0)
+
+existInCart.quintity = parseInt(quintity);
+
+total +=existInCart.quintity * existInCart.unitPrice;
+
+cart.totalAmount = total;
+
+const updatedCart = await cart.save();
+
+return {data:updatedCart , statusCode:200}
+
+}

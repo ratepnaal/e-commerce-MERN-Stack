@@ -1,5 +1,5 @@
 import express from'express';
-import { addItemToCart, getActiveCartForUser } from '../services/cartService';
+import { addItemToCart, getActiveCartForUser, updateItemInCart } from '../services/cartService';
 import valditeJWT from '../middlewares/validateJWT';
 import { extendRequest } from '../types/ExtendedRequest';
 
@@ -22,3 +22,13 @@ const {productId , quintity } = req.body;
 const response = await addItemToCart({userid , productId , quintity});
 res.status(response.statusCode).send(response.data);
 })
+
+cartRouter.put("/items" , valditeJWT , async (req : extendRequest , res)=>{
+const userid = req?.user?._id;
+
+const {productId , quintity} = req.body;
+
+const response = await updateItemInCart({userid , productId , quintity})
+res.status(response.statusCode).send(response.data);
+})
+
