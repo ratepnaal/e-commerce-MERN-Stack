@@ -1,10 +1,8 @@
 import { NextFunction , Request , Response } from "express";
 import  jwt  from "jsonwebtoken";
 import { userModel } from "../models/userModel";
+import { extendRequest } from "../types/ExtendedRequest";
 
-interface extendRequest extends Request {
-user?:any;
-}
 
 const valditeJWT =async (req:extendRequest , res:Response , next:NextFunction)=>{
 const authoraiationHeader = req.get("Authorization");

@@ -1,4 +1,5 @@
 import { cartModel } from "../models/cartModel";
+import { productModel } from "../models/productModel";
 
 interface createcartForUser {
     userid:string;
@@ -23,5 +24,43 @@ if(!cart){
 }
 
 return cart
+
+}
+
+interface IaddItemToCart {
+    productId:any;
+    quintity:string;
+    userid: string;
+}
+
+export const addItemToCart =async  ({productId , quintity , userid } : IaddItemToCart)=>{
+const cart = await getActiveCartForUser({userid});
+
+const existInCart = cart.items.find((p)=>p.product.toString() === productId);
+
+if(existInCart){
+    return {data:"Items Already  Exist in Cart ! " , statusCode:400}
+}
+
+const product = await productModel.findById(productId);
+
+if(!product){
+    return {data:"Product Not Found ! " , statusCode:400}
+}
+
+if (product.stock < parseInt(quintity)){
+    return {data : "Low Stock For Items" , statusCode:400}; 
+}
+cart.items.push({
+    product:productId,
+    unitPrice:product.price,
+    quintity:parseInt(quintity)
+})
+
+cart.totalAmount += product.price * parseInt(quintity);
+
+const updatedCart = await cart.save();
+
+return {data:updatedCart , statusCode:200}
 
 }
