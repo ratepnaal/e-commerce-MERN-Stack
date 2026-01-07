@@ -6,6 +6,7 @@ export const getAllProduct = async ()=>{
 }
 
 export const seedInitialProducts = async ()=>{
+try{
     const products = [
         {name:"Product 1 " , image:"image 1 " , price: 15 , stock:100},
         {name:"Product 2 " , image:"image 2 " , price: 200 , stock:1550}
@@ -16,4 +17,9 @@ export const seedInitialProducts = async ()=>{
     if(exictingProducts.length === 0){
         await productModel.insertMany(products);
     }
+}
+
+catch(err){
+console.log("cannot seed for database" , err)
+}
 }

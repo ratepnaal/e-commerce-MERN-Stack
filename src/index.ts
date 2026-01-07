@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express"
 import mongoose from "mongoose";
 import {router} from './routes/userRoute'
@@ -14,7 +17,7 @@ app.use("/Cart" , cartRouter);
 
 const port = 3001;
 
-mongoose.connect('mongodb://127.0.0.1:27017/e_commerce')
+mongoose.connect(process.env.DATABASE_URL || '')
 .then(()=>{console.log(' CONNECTED ON DB')})
 .catch(()=>{console.log("FAILED TO CONNECT ON DB ")})
 

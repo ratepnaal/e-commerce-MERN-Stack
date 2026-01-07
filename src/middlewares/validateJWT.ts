@@ -19,7 +19,13 @@ if(!token){
     return;
 }
 
-jwt.verify(token ,"ok12bmw33158pp" ,async (err , payload)=>{
+const secretKey = process.env.JWT_SECRET || '';
+if(!secretKey){
+    res.status(500).send("JWT_SECRET is not configured");
+    return;
+}
+
+jwt.verify(token , secretKey ,async (err , payload)=>{
     
 if(err){
     console.log("token :",token);

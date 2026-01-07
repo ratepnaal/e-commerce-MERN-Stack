@@ -24,7 +24,7 @@ export const Register = async({firstName , lastName , email , password } : regis
     const hashedPassword = await bcrypt.hash(password , 10)
 
     const newUser = new userModel({firstName , lastName , email , password : hashedPassword});
-    newUser.save();
+    await newUser.save();
 
     return {data:generatejwt({firstName , lastName , email}) , statusCode:200}
 
@@ -61,8 +61,12 @@ export const Login = async ({email , password}:loginParams)=>{
     return {data:" Email Or Password Wrong ! " , statusCode:400}
 
 }
+const secretKey = process.env.JWT_SECRET || '';
 
 const generatejwt = (data: any)=>{
-    return jwt.sign(data ,"ok12bmw33158pp" , { expiresIn: '24h' })
+    if(!secretKey){
+        throw new Error("JWT_SECRET is not configured");
+    }
+    return jwt.sign(data , secretKey , { expiresIn: '24h' })
 }
 
