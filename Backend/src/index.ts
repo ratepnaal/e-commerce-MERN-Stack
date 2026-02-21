@@ -7,7 +7,11 @@ import {router} from './routes/userRoute'
 import { seedInitialProducts } from "./services/productServices";
 import { productRouter } from "./routes/productRoute";
 import { cartRouter } from "./routes/cartRoute";
+import  cors from 'cors';
+
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
