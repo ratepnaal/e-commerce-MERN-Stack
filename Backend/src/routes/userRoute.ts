@@ -10,7 +10,7 @@ const {firstName , lastName , email , password} = req.body;
 
     const {statusCode , data} = await Register({firstName , lastName , email , password})
 
-    res.status(statusCode).send(data)
+    res.status(statusCode).json(data)
   }
 catch(err: any){
   console.error("Register error:", err);
@@ -25,7 +25,7 @@ catch(err: any){
 
     const {statusCode , data} = await Login({email , password})
     
-    res.status(statusCode).send(data);
+    res.status(statusCode).json(data);
     }
     catch(err: any){
       console.error("Login error:", err);

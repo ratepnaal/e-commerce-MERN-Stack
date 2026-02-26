@@ -1,7 +1,9 @@
+import { useAuth } from '../context/Auth/AuthContext';
 import logo from '../photos/pngfind.com-ecommerce-png-290389 (2).png'
 
 const Navbar = ()=>{
-
+const {username , token} = useAuth();
+console.log('From Navbar : ' , {username , token})
     return(
 <div className=" h-18 bg-cyan-500 rounded-3xl mx-3 my-2 hover:scale-101 duration-300 delay-150  ">
           
