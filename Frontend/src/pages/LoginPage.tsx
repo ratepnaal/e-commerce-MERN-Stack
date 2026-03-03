@@ -6,20 +6,21 @@ import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Alert from "../components/Alert";
 
- const RegisterPage = ()=>{
 
-    const [isSuccess , setisSuccess] = useState<boolean>(true);
-      const [showAlert , setShowAlert] = useState<boolean>(false);
+ const LoginPage = ()=>{
+
+    const [isSuccess , setisSuccess] = useState<boolean>(false);
+    const [showAlert , setShowAlert] = useState<boolean>(false);
     const [subtitle , setSubTitle] = useState("");
     const [isVisible, setIsVisible] = useState<boolean>(false);
-    
 
-    const firstNameRef = useRef<HTMLInputElement>(null);
-    const lastNameRef = useRef<HTMLInputElement>(null);
+    
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-        const timeoutRef = useRef<number | null>(null);
+    const timeoutRef = useRef<number | null>(null);
 
+    const {login} = useAuth();
+    const navigate = useNavigate()
 
     const showAlertWithAnimation = (success: boolean, message: string) => {
 
@@ -47,59 +48,54 @@ import Alert from "../components/Alert";
         }, 500); 
     }, 3000);
 };
-
-    const {login} = useAuth();
-    const navigate = useNavigate()
-    const OnSubmit = async (event: React.FormEvent<HTMLFormElement>)=>{
-        const firstName = firstNameRef.current?.value;
-        const lastName = lastNameRef.current?.value;
+    
+    const OnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         const email = emailRef.current?.value;
         const password = passwordRef.current?.value;
 
         event.preventDefault();
 
-        if(!firstName || !lastName || !password || !email){
+        if( !password || !email){
             showAlertWithAnimation(false, "Please fill in all fields!");
             return
         }
 
-        const response = await fetch(`${BASE_URL}/users/register` ,{ 
+        const response = await fetch(`${BASE_URL}/users/login` ,{ 
             method:"POST",
             headers:{
                 "Content-Type" : "application/json"
             },
             body:JSON.stringify({
-                firstName,
-                lastName,
                 email,
                 password
             })
      } )
      if(!response.ok){
         showAlertWithAnimation(false, "Email or Password is incorrect");
-        setisSuccess(false)
 return;
      }
      if(response.ok){
-        showAlertWithAnimation(true, "You Are Welcome in Your Account");  
-        setisSuccess(true);
+       showAlertWithAnimation(true, "You Are Welcome in Your Account");        
      }
      const token = await response.json();
 
      if(!token){
-        showAlertWithAnimation(false, "Invalid Token!");
+       showAlertWithAnimation(false, "Invalid Token!");
+        return
      }
 
-setTimeout(() => {
+    setTimeout(() => {
                 login(email, token);
                 navigate("/");
-            }, 1500);}
+            }, 1500);
+
+    }
     return(
 <>
 <div className="flex flex-col items-center mt-8">
 
     <div>
-<h1 className="font-semibold text-2xl">Registration</h1>
+<h1 className="font-semibold text-2xl">Login</h1>
     </div>
 
 
@@ -109,15 +105,15 @@ setTimeout(() => {
 
     <FormComponent text={"Email : "} type={"email"} placeholder={"Enter Your Email Here .. "} ref={emailRef}/>
 
-    <FormComponent text={"First Name :"} type={"text"} placeholder={"Enter Your First Name Here .. "} ref={firstNameRef} />
-
-    <FormComponent text={"Last Name : "} type={"text"} placeholder={"Enter Your Last Name Here .. "} ref={lastNameRef}/>
-
     <FormComponent text={"Password : "} type={"password"} placeholder={"Enter Your Password Here .. "} ref={passwordRef}/>
 
-    <SubmitButton text={"Sign In "} OnSubmit={OnSubmit}/> 
+    <SubmitButton text={"Log In "} OnSubmit={OnSubmit}/> 
+  
+    </form>
+   
+</div>
 
-   {showAlert && (
+{showAlert && (
     <div className={`transition-all duration-500 ease-in-out transform ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
     }`}>
@@ -128,12 +124,10 @@ setTimeout(() => {
         />
     </div>
 )}
-  
-    </form>
-</div>
-</div>
 
+
+</div>
 </>
-    )}
-
-export default RegisterPage;
+    )
+}
+export default LoginPage;
