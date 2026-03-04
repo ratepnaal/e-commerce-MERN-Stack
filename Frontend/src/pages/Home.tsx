@@ -36,7 +36,7 @@ return (<ServerError/>)
 
 
     return (
-        <div className='max-w-6xl  px-5 mx-auto py-10'>
+        <div className='max-w-6xl px-5 mx-auto py-10'>
             <Swiper 
                 slidesPerView={1} 
                 spaceBetween={20} 

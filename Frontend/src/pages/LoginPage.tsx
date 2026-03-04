@@ -1,53 +1,22 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { SubmitButton } from "../components/Buttons";
 import FormComponent from "../components/FormComponent";
 import { BASE_URL } from "../constant/baseurl";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Alert from "../components/Alert";
+import { useAlert } from "../components/useAlert";
 
 
  const LoginPage = ()=>{
 
-    const [isSuccess , setisSuccess] = useState<boolean>(false);
-    const [showAlert , setShowAlert] = useState<boolean>(false);
-    const [subtitle , setSubTitle] = useState("");
-    const [isVisible, setIsVisible] = useState<boolean>(false);
-
+    const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
     
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const timeoutRef = useRef<number | null>(null);
 
     const {login} = useAuth();
     const navigate = useNavigate()
-
-    const showAlertWithAnimation = (success: boolean, message: string) => {
-
-        if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-    }
-
-   
-    setisSuccess(success);
-    setSubTitle(message);
-    
-    
-    setShowAlert(true);
-    
-    
-    setTimeout(() => {
-        setIsVisible(true);
-    }, 10);
-
-    
-    timeoutRef.current = setTimeout(() => {
-        setIsVisible(false);
-        setTimeout(() => {
-            setShowAlert(false);
-        }, 500); 
-    }, 3000);
-};
     
     const OnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         const email = emailRef.current?.value;
@@ -56,7 +25,7 @@ import Alert from "../components/Alert";
         event.preventDefault();
 
         if( !password || !email){
-            showAlertWithAnimation(false, "Please fill in all fields!");
+            triggerAlert(false, "Please fill in all fields!");
             return
         }
 
@@ -71,16 +40,16 @@ import Alert from "../components/Alert";
             })
      } )
      if(!response.ok){
-        showAlertWithAnimation(false, "Email or Password is incorrect");
+        triggerAlert(false, "Email or Password is incorrect");
 return;
      }
      if(response.ok){
-       showAlertWithAnimation(true, "You Are Welcome in Your Account");        
+       triggerAlert(true, "You Are Welcome in Your Account");        
      }
      const token = await response.json();
 
      if(!token){
-       showAlertWithAnimation(false, "Invalid Token!");
+       triggerAlert(false, "Invalid Token!");
         return
      }
 
@@ -109,6 +78,10 @@ return;
 
     <SubmitButton text={"Log In "} OnSubmit={OnSubmit}/> 
   
+  <h5 className="text-center text-xs"> Don't Have Account ? <b></b>
+     <button onClick={()=>{navigate("/register")}}
+     className="text-blue-600 hover:scale-105"
+     > Sign in </button> </h5>
     </form>
    
 </div>

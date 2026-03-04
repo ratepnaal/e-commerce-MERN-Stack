@@ -1,52 +1,20 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { SubmitButton } from "../components/Buttons";
 import FormComponent from "../components/FormComponent";
 import { BASE_URL } from "../constant/baseurl";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Alert from "../components/Alert";
+import { useAlert } from "../components/useAlert";
 
  const RegisterPage = ()=>{
-
-    const [isSuccess , setisSuccess] = useState<boolean>(true);
-      const [showAlert , setShowAlert] = useState<boolean>(false);
-    const [subtitle , setSubTitle] = useState("");
-    const [isVisible, setIsVisible] = useState<boolean>(false);
     
-
+const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-        const timeoutRef = useRef<number | null>(null);
 
-
-    const showAlertWithAnimation = (success: boolean, message: string) => {
-
-        if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-    }
-
-   
-    setisSuccess(success);
-    setSubTitle(message);
-    
-    
-    setShowAlert(true);
-    
-    
-    setTimeout(() => {
-        setIsVisible(true);
-    }, 10);
-
-    
-    timeoutRef.current = setTimeout(() => {
-        setIsVisible(false);
-        setTimeout(() => {
-            setShowAlert(false);
-        }, 500); 
-    }, 3000);
-};
 
     const {login} = useAuth();
     const navigate = useNavigate()
@@ -59,7 +27,7 @@ import Alert from "../components/Alert";
         event.preventDefault();
 
         if(!firstName || !lastName || !password || !email){
-            showAlertWithAnimation(false, "Please fill in all fields!");
+            triggerAlert(false, "Please fill in all fields!");
             return
         }
 
@@ -76,18 +44,18 @@ import Alert from "../components/Alert";
             })
      } )
      if(!response.ok){
-        showAlertWithAnimation(false, "Email or Password is incorrect");
-        setisSuccess(false)
+        triggerAlert(false, "Email or Password is incorrect");
+        
 return;
      }
      if(response.ok){
-        showAlertWithAnimation(true, "You Are Welcome in Your Account");  
-        setisSuccess(true);
+        triggerAlert(true, "You Are Welcome in Your Account");  
+        
      }
      const token = await response.json();
 
      if(!token){
-        showAlertWithAnimation(false, "Invalid Token!");
+        triggerAlert(false, "Invalid Token!");
      }
 
 setTimeout(() => {
@@ -96,6 +64,7 @@ setTimeout(() => {
             }, 1500);}
     return(
 <>
+
 <div className="flex flex-col items-center mt-8">
 
     <div>
@@ -116,9 +85,11 @@ setTimeout(() => {
     <FormComponent text={"Password : "} type={"password"} placeholder={"Enter Your Password Here .. "} ref={passwordRef}/>
 
     <SubmitButton text={"Sign In "} OnSubmit={OnSubmit}/> 
-
+  
+    </form>
+</div>
    {showAlert && (
-    <div className={`transition-all duration-500 ease-in-out transform ${
+    <div className={`transition-all duration-500 ease-in-out transform    ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
     }`}>
         <Alert
@@ -128,9 +99,6 @@ setTimeout(() => {
         />
     </div>
 )}
-  
-    </form>
-</div>
 </div>
 
 </>

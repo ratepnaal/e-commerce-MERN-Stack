@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+.dropdown-menu {
+  z-index: 9999 !important;
+}
+
+/* خفض z-index للسويبر */
+.swiper {
+  z-index: 1 !important;
+}
