@@ -1,7 +1,9 @@
+import { useCart } from '../context/Cart/CartContext';
 import type { Products } from '../tyoes/product';
 
 
-const ProductCard = ({ image , name , price } : Products)=>{
+const ProductCard = ({ _id , image , name , price } : Products)=>{
+    const {addItemToCart} = useCart();
     return(
             <div >
                         <div className="overflow-hidden shadow-lg rounded-xl bg-white border border-gray-100 h-full">
@@ -25,12 +27,12 @@ const ProductCard = ({ image , name , price } : Products)=>{
                                     </div>
                                     
                                     <div className="mt-4 flex gap-2">
-                                        <a 
-                                            
+                                        <button 
+                                            onClick={()=>addItemToCart(_id)}
                                             className="text-xs bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200"
                                         >
                                             Add To Cart
-                                        </a>
+                                        </button>
                                         <a 
                                             
                                             className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-all"
