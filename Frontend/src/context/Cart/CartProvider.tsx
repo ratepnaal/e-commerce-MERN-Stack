@@ -1,4 +1,4 @@
-import {useState, type FC , type PropsWithChildren} from 'react'
+import {useEffect, useState, type FC , type PropsWithChildren} from 'react'
 import { CartContext } from './CartContext'
 import type { CartItemType } from '../../tyoes/CartItem';
 import { BASE_URL } from '../../constant/baseurl';
@@ -9,7 +9,44 @@ const CartProvider: FC<PropsWithChildren> = ({children})=>{
     const {token} = useAuth();
     const [cartItems , setCartItem] = useState<CartItemType[]>([]);
     const [totalAmount , setTotalAmount] = useState<number>(0);
-        const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
+    const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
+
+    useEffect(()=>{
+    if(!token){
+        return
+    }
+
+    const fetchCart = async()=>{
+        const response = await fetch (`${BASE_URL}/cart` , {
+            headers:{
+                Authorization:`Bearer ${token}`,
+            }
+        })
+        if(!response.ok){
+            triggerAlert(false , "Error Fetch Data ")
+            return;
+        }
+        const cart = await response.json();
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const cartItemsMapped = cart.items.map(({product, quintity}:{product: any, quintity: number})=>{
+    return {
+        productId: product._id,
+        title: product.name,
+        productImage: product.image,
+        unitPrice: product.price,
+        quintity
+    }
+})
+
+        setCartItem(cartItemsMapped);
+        setTotalAmount(cart.totalAmount ?? 0);
+        
+    }
+    fetchCart();
+},[token, triggerAlert])
+
+
     
 
 const addItemToCart = async (productId : string)=>{
@@ -40,9 +77,8 @@ if(!cart){
 const cartItemsMapped = cart.items.map(({product, quintity}:{product: any, quintity: number})=>{
     return {
         productId: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
+        title: product.name,
+        productImage: product.image,
         unitPrice: product.price,
         quintity
     }
