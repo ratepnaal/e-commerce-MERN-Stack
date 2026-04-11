@@ -4,13 +4,21 @@ import type { CartItemType } from "../../tyoes/CartItem";
 interface CartContextType {
   cartItems:CartItemType[];
   totalAmount:number;
-  addItemToCart:(productId:string)=>void;
+  addItemToCart:(productId:string)=>Promise<void>;
+  increaseItemQuantity:(productId:string, currentQuantity:number)=>Promise<void>;
+  decreaseItemQuantity:(productId:string, currentQuantity:number)=>Promise<void>;
+  removeItemFromCart:(productId:string)=>Promise<void>;
+  clearCart:()=>Promise<void>;
 }
 
 export const CartContext = createContext<CartContextType>({
    cartItems:[],
    totalAmount:0,
-   addItemToCart:()=>{}
+   addItemToCart:async ()=>{},
+   increaseItemQuantity:async ()=>{},
+   decreaseItemQuantity:async ()=>{},
+  removeItemFromCart:async ()=>{},
+  clearCart:async ()=>{}
       })
 
 export const useCart = ()=> useContext(CartContext)

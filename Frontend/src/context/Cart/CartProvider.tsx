@@ -5,6 +5,35 @@ import { BASE_URL } from '../../constant/baseurl';
 import { useAlert } from '../../components/useAlert';
 import Alert from '../../components/Alert';
 import { useAuth } from '../Auth/AuthContext';
+
+interface CartApiResponse {
+    items: {
+        product: {
+            _id: string;
+            name: string;
+            image: string;
+            price: number;
+            stock: number;
+        };
+        quintity: number;
+    }[];
+    totalAmount: number;
+}
+
+// Keep frontend cart shape consistent after any cart API response.
+const mapCartItems = (cart:CartApiResponse): CartItemType[] => {
+    return cart.items.map(({product, quintity})=>{
+        return {
+            productId: product._id,
+            title: product.name,
+            productImage: product.image,
+            unitPrice: product.price,
+            quintity,
+            stock: product.stock
+        }
+    })
+}
+
 const CartProvider: FC<PropsWithChildren> = ({children})=>{
     const {token} = useAuth();
     const [cartItems , setCartItem] = useState<CartItemType[]>([]);
@@ -28,18 +57,7 @@ const CartProvider: FC<PropsWithChildren> = ({children})=>{
         }
         const cart = await response.json();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const cartItemsMapped = cart.items.map(({product, quintity}:{product: any, quintity: number})=>{
-    return {
-        productId: product._id,
-        title: product.name,
-        productImage: product.image,
-        unitPrice: product.price,
-        quintity
-    }
-})
-
-        setCartItem(cartItemsMapped);
+        setCartItem(mapCartItems(cart));
         setTotalAmount(cart.totalAmount ?? 0);
         
     }
@@ -51,6 +69,12 @@ const CartProvider: FC<PropsWithChildren> = ({children})=>{
 
 const addItemToCart = async (productId : string)=>{
     try{
+const existingItem = cartItems.find((item)=>item.productId === productId);
+if(existingItem && existingItem.quintity >= existingItem.stock){
+    triggerAlert(false, "هذا أقصى عدد ممكن طلبه");
+    return;
+}
+
 const response = await fetch(`${BASE_URL}/Cart/items` , {
     method:"POST",
     headers:{
@@ -72,18 +96,7 @@ if(!cart){
     triggerAlert(false, "Failed to add item to cart");
     return;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const cartItemsMapped = cart.items.map(({product, quintity}:{product: any, quintity: number})=>{
-    return {
-        productId: product._id,
-        title: product.name,
-        productImage: product.image,
-        unitPrice: product.price,
-        quintity
-    }
-})
-setCartItem([...cartItemsMapped]);
+setCartItem(mapCartItems(cart));
 setTotalAmount(cart.totalAmount);
 
 }
@@ -92,9 +105,137 @@ catch(err){
     triggerAlert(false, "Failed to add item to cart");
 }
 }
+
+const increaseItemQuantity = async (productId:string, currentQuantity:number)=>{
+    try{
+        const currentItem = cartItems.find((item)=>item.productId === productId);
+        if(currentItem && currentItem.quintity >= currentItem.stock){
+            triggerAlert(false, "هذا أقصى عدد ممكن طلبه");
+            return;
+        }
+
+        const response = await fetch(`${BASE_URL}/Cart/items`, {
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body:JSON.stringify({productId, quintity: currentQuantity + 1})
+        })
+
+        const contentType = response.headers.get("content-type") ?? "";
+        const cart = contentType.includes("application/json")
+            ? await response.json()
+            : await response.text();
+
+        if(!response.ok){
+            triggerAlert(false, typeof cart === "string" ? cart : "Failed to update item quantity");
+            return;
+        }
+
+        setCartItem(mapCartItems(cart));
+        setTotalAmount(cart.totalAmount ?? 0);
+    }
+    catch(err){
+        console.log(err);
+        triggerAlert(false, "Failed to update item quantity");
+    }
+}
+
+const decreaseItemQuantity = async (productId:string, currentQuantity:number)=>{
+    if(currentQuantity <= 1){
+        await removeItemFromCart(productId);
+        return;
+    }
+
+    try{
+        const response = await fetch(`${BASE_URL}/Cart/items`, {
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body:JSON.stringify({productId, quintity: currentQuantity - 1})
+        })
+
+        const contentType = response.headers.get("content-type") ?? "";
+        const cart = contentType.includes("application/json")
+            ? await response.json()
+            : await response.text();
+
+        if(!response.ok){
+            triggerAlert(false, typeof cart === "string" ? cart : "Failed to update item quantity");
+            return;
+        }
+
+        setCartItem(mapCartItems(cart));
+        setTotalAmount(cart.totalAmount ?? 0);
+    }
+    catch(err){
+        console.log(err);
+        triggerAlert(false, "Failed to update item quantity");
+    }
+}
+
+const removeItemFromCart = async (productId:string)=>{
+    try{
+        const response = await fetch(`${BASE_URL}/Cart/items/${productId}`, {
+            method:"DELETE",
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        const contentType = response.headers.get("content-type") ?? "";
+        const cart = contentType.includes("application/json")
+            ? await response.json()
+            : await response.text();
+
+        if(!response.ok){
+            triggerAlert(false, typeof cart === "string" ? cart : "Failed to remove item from cart");
+            return;
+        }
+
+        setCartItem(mapCartItems(cart));
+        setTotalAmount(cart.totalAmount ?? 0);
+    }
+    catch(err){
+        console.log(err);
+        triggerAlert(false, "Failed to remove item from cart");
+    }
+}
+
+const clearCart = async ()=>{
+    try{
+        const response = await fetch(`${BASE_URL}/Cart/`, {
+            method:"DELETE",
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        const contentType = response.headers.get("content-type") ?? "";
+        const cart = contentType.includes("application/json")
+            ? await response.json()
+            : await response.text();
+
+        if(!response.ok){
+            triggerAlert(false, typeof cart === "string" ? cart : "Failed to clear cart");
+            return;
+        }
+
+        setCartItem([]);
+        setTotalAmount(0);
+        triggerAlert(true, "Cart cleared successfully");
+    }
+    catch(err){
+        console.log(err);
+        triggerAlert(false, "Failed to clear cart");
+    }
+}
 return(
     <>
-    <CartContext.Provider value={{cartItems , totalAmount , addItemToCart}}>
+    <CartContext.Provider value={{cartItems , totalAmount , addItemToCart, increaseItemQuantity, decreaseItemQuantity, removeItemFromCart, clearCart}}>
         {children}
     </CartContext.Provider>
 

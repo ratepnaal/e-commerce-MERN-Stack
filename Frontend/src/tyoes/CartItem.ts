@@ -4,4 +4,5 @@ export interface CartItemType {
     quintity:number;
     unitPrice:number;
     productImage:string;
+    stock:number;
 }
