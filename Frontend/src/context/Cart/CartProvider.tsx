@@ -233,9 +233,47 @@ const clearCart = async ()=>{
         triggerAlert(false, "Failed to clear cart");
     }
 }
+
+const checkoutCart = async (address:string):Promise<boolean>=>{
+    if(!address.trim()){
+        triggerAlert(false, "Please enter your shipping address");
+        return false;
+    }
+
+    try{
+        const response = await fetch(`${BASE_URL}/Cart/checkout`, {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body:JSON.stringify({address})
+        })
+
+        const contentType = response.headers.get("content-type") ?? "";
+        const result = contentType.includes("application/json")
+            ? await response.json()
+            : await response.text();
+
+        if(!response.ok){
+            triggerAlert(false, typeof result === "string" ? result : "Failed to confirm order");
+            return false;
+        }
+
+        setCartItem([]);
+        setTotalAmount(0);
+        triggerAlert(true, "Order placed successfully");
+        return true;
+    }
+    catch(err){
+        console.log(err);
+        triggerAlert(false, "Failed to confirm order");
+        return false;
+    }
+}
 return(
     <>
-    <CartContext.Provider value={{cartItems , totalAmount , addItemToCart, increaseItemQuantity, decreaseItemQuantity, removeItemFromCart, clearCart}}>
+    <CartContext.Provider value={{cartItems , totalAmount , addItemToCart, increaseItemQuantity, decreaseItemQuantity, removeItemFromCart, clearCart, checkoutCart}}>
         {children}
     </CartContext.Provider>
 

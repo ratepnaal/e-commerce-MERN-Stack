@@ -194,3 +194,8 @@ await cart.save();
 
 return {data:order , statusCode:200}
 }
+
+export const getOrdersForUser = async ({userid}:{userid:string})=>{
+const orders = await OrderModel.find({userid}).sort({_id:-1});
+return {data:orders , statusCode:200}
+}

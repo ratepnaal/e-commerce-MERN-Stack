@@ -1,5 +1,5 @@
 import express from'express';
-import { addItemToCart, checkout, ClearCart, deleteItemInCart, getActiveCartForUser, updateItemInCart } from '../services/cartService';
+import { addItemToCart, checkout, ClearCart, deleteItemInCart, getActiveCartForUser, getOrdersForUser, updateItemInCart } from '../services/cartService';
 import valditeJWT from '../middlewares/validateJWT';
 import { extendRequest } from '../types/ExtendedRequest';
 
@@ -87,4 +87,15 @@ cartRouter.post("/checkout" , valditeJWT , async (req : extendRequest , res)=>{
    catch(err){
     res.status(500).send(" SomeThing Went Wrong ! ");
    }
+})
+
+cartRouter.get("/orders" , valditeJWT , async (req:extendRequest , res)=>{
+    try{
+    const userid = req?.user?._id;
+    const response = await getOrdersForUser({userid});
+    res.status(response.statusCode).send(response.data);
+    }
+    catch(err){
+        res.status(500).send(" SomeThing Went Wrong ! ");
+    }
 })

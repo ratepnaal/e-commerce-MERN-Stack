@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 export const useAlert = () => {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -7,7 +7,7 @@ export const useAlert = () => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const timeoutRef = useRef<number | null>(null);
 
-    const triggerAlert = (success: boolean, message: string) => {
+    const triggerAlert = useCallback((success: boolean, message: string) => {
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
         setIsSuccess(success);
@@ -20,7 +20,15 @@ export const useAlert = () => {
             setIsVisible(false);
             setTimeout(() => setShowAlert(false), 500);
         }, 3000);
-    };
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
 
     return { isSuccess, showAlert, subtitle, isVisible, triggerAlert };
 };

@@ -9,6 +9,7 @@ interface CartContextType {
   decreaseItemQuantity:(productId:string, currentQuantity:number)=>Promise<void>;
   removeItemFromCart:(productId:string)=>Promise<void>;
   clearCart:()=>Promise<void>;
+  checkoutCart:(address:string)=>Promise<boolean>;
 }
 
 export const CartContext = createContext<CartContextType>({
@@ -18,7 +19,8 @@ export const CartContext = createContext<CartContextType>({
    increaseItemQuantity:async ()=>{},
    decreaseItemQuantity:async ()=>{},
   removeItemFromCart:async ()=>{},
-  clearCart:async ()=>{}
+  clearCart:async ()=>{},
+  checkoutCart:async ()=>false
       })
 
 export const useCart = ()=> useContext(CartContext)
