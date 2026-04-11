@@ -32,7 +32,7 @@ useEffect(()=>{
 console.log({cart})
 return(
     <>
-    <h1>hello Cart Page </h1>
+    <h1 className="text-3xl font-bold text-center mt-10">Cart Page</h1>
        {showAlert && (
     <div className={`transition-all duration-500 ease-in-out transform    ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'

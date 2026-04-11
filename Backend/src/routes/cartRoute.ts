@@ -10,7 +10,7 @@ cartRouter.get('/' ,
     async (req:extendRequest , res)=>{
         try{
 const userid = req.user._id
-const cart = await getActiveCartForUser({userid})
+const cart = await getActiveCartForUser({userid , populateProducts:true});
 res.status(200).send(cart);
         }
 catch(err){

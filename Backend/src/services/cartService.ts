@@ -14,11 +14,18 @@ return cart;
 
 interface getActiveCartForUser {
     userid:string;
+    populateProducts?:boolean;
 }
 
 
-export const getActiveCartForUser = async ({userid}:getActiveCartForUser)=>{
-let cart = await cartModel.findOne({userid , status:"Active"});
+export const getActiveCartForUser = async ({userid , populateProducts}:getActiveCartForUser)=>{
+let cart ;
+if(populateProducts){
+    cart = await cartModel.findOne({userid , status:"Active"}).sort({_id:-1}).populate("items.product");
+}
+else{
+    cart = await cartModel.findOne({userid , status:"Active"}).sort({_id:-1});
+}
 
 if(!cart){
     cart = await createcartForUser({userid});
@@ -60,9 +67,10 @@ cart.items.push({
 
 cart.totalAmount += product.price * parseInt(quintity);
 
-const updatedCart = await cart.save();
+ await cart.save();
 
-return {data:updatedCart , statusCode:200}
+return {data: await getActiveCartForUser({userid ,
+     populateProducts:true}) , statusCode:200}
 
 }
 
@@ -101,9 +109,10 @@ total +=existInCart.quintity * existInCart.unitPrice;
 
 cart.totalAmount = total;
 
-const updatedCart = await cart.save();
+ await cart.save();
 
-return {data:updatedCart , statusCode:200}
+return {data: await getActiveCartForUser({userid ,
+     populateProducts:true}) , statusCode:200}
 
 };
 
@@ -122,9 +131,10 @@ const othercardItems = cart.items.filter((p)=>p.product.toString() !== productId
 let total = calculateCartTotalItems({cartItems: othercardItems})
 cart.items = othercardItems;
 cart.totalAmount = total;
-const updatedCart = await cart.save();
+ await cart.save();
 
-return {data:updatedCart , statusCode:200}
+return {data: await  getActiveCartForUser({userid ,
+     populateProducts:true}) , statusCode:200}
 }
 
 

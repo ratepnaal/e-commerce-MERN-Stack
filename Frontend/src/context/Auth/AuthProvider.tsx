@@ -11,8 +11,8 @@ const [token , setToken] = useState<string | null>(localStorage.getItem(TOKEN_KE
 const login = (username:string , token:string)=>{
 setUsername(username);
 setToken(token);
-localStorage.setItem(username , USENAME_KEY);
-localStorage.setItem(token , TOKEN_KEY)
+localStorage.setItem(USENAME_KEY , username);
+localStorage.setItem(TOKEN_KEY , token)
 }
 
 const logout = ()=>{

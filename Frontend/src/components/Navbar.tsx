@@ -1,7 +1,7 @@
-import logo from '../photos/pngfind.com-ecommerce-png-290389 (2).png'
 import { FaCartPlus } from "react-icons/fa";
 import AppMenu from './AppMenu';
 import { useNavigate } from 'react-router-dom';
+import logo from '../photos/logo.png';
 
 
 
