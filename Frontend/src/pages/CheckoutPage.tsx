@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import Alert from "../components/Alert";
 import { useAlert } from "../components/useAlert";
 import { useCart } from "../context/Cart/CartContext";
 
@@ -8,7 +7,7 @@ const CheckoutPage = ()=>{
     const location = useLocation();
     const navigate = useNavigate();
     const { cartItems, totalAmount, checkoutCart } = useCart();
-    const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
+    const { triggerAlert } = useAlert();
     const [address, setAddress] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -39,10 +38,13 @@ const CheckoutPage = ()=>{
 
     return(
         <>
-            <section className="mx-auto mt-10 w-[95%] max-w-6xl rounded-2xl bg-white/95 p-5 shadow-lg ring-1 ring-slate-100 md:p-7">
+            <section className="section-shell mx-auto mt-10 w-[95%] max-w-6xl rounded-3xl p-5 md:p-7">
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-extrabold text-slate-800 md:text-3xl">Checkout</h1>
-                    <span className="rounded-full bg-cyan-100 px-3 py-1 text-sm font-semibold text-cyan-700">
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">Secure payment</p>
+                        <h1 className="text-2xl font-extrabold text-slate-900 md:text-3xl">Checkout</h1>
+                    </div>
+                    <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-700">
                         {cartItems.length} items
                     </span>
                 </div>
@@ -94,11 +96,11 @@ const CheckoutPage = ()=>{
                                     value={address}
                                     onChange={(e)=>{setAddress(e.target.value)}}
                                     placeholder="Enter your full address here..."
-                                    className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
+                                    className="min-h-28 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
                                 />
                             </div>
 
-                            <div className="flex flex-col justify-between rounded-xl bg-slate-900 p-4 text-white">
+                            <div className="flex flex-col justify-between rounded-2xl bg-slate-900 p-4 text-white">
                                 <div>
                                     <div className="mb-2 text-sm text-slate-300">Final Total</div>
                                     <div className="text-2xl font-extrabold">${finalTotal.toFixed(2)}</div>
@@ -107,7 +109,7 @@ const CheckoutPage = ()=>{
                                 <button
                                     onClick={handleConfirmOrder}
                                     disabled={isSubmitting || cartItems.length === 0}
-                                    className="mt-4 w-full rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-600 disabled:cursor-not-allowed disabled:bg-slate-500"
+                                    className="mt-4 w-full rounded-xl bg-teal-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-600 disabled:cursor-not-allowed disabled:bg-slate-500"
                                 >
                                     {isSubmitting ? "Confirming..." : "Confirm Order"}
                                 </button>
@@ -117,17 +119,6 @@ const CheckoutPage = ()=>{
                 )}
             </section>
 
-            {showAlert && (
-                <div className={`transition-all duration-500 ease-in-out transform ${
-                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-                }`}>
-                    <Alert
-                        success={isSuccess}
-                        MainTitle={isSuccess ? "Order Confirmed" : "Checkout Error"}
-                        SubTitle={subtitle}
-                    />
-                </div>
-            )}
         </>
     )
 }

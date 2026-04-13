@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 .dropdown-menu {
@@ -7,4 +8,45 @@
 /* خفض z-index للسويبر */
 .swiper {
   z-index: 1 !important;
+}
+
+:root {
+  --brand: #0f766e;
+  --brand-soft: #ccfbf1;
+  --ink: #0f172a;
+  --muted: #64748b;
+}
+
+* {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 15%, rgba(20, 184, 166, 0.22), transparent 35%),
+    radial-gradient(circle at 90% 2%, rgba(15, 23, 42, 0.12), transparent 40%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 45%, #f8fafc 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.section-shell {
+  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 45px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+@keyframes toast-bar {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }

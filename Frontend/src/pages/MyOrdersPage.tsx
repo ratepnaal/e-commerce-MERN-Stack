@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import Alert from "../components/Alert";
 import { useAlert } from "../components/useAlert";
 import { BASE_URL } from "../constant/baseurl";
 import { useAuth } from "../context/Auth/AuthContext";
@@ -20,7 +19,7 @@ interface Order {
 
 const MyOrdersPage = ()=>{
     const { token } = useAuth();
-    const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
+    const { triggerAlert } = useAlert();
     const [orders, setOrders] = useState<Order[]>([]);
     const [openedOrderId, setOpenedOrderId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(()=>Boolean(token));
@@ -68,10 +67,13 @@ const MyOrdersPage = ()=>{
 
     return (
         <>
-            <section className="mx-auto mt-10 w-[95%] max-w-6xl rounded-2xl bg-white/95 p-5 shadow-lg ring-1 ring-slate-100 md:p-7">
+            <section className="section-shell mx-auto mt-10 w-[95%] max-w-6xl rounded-3xl p-5 md:p-7">
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-extrabold text-slate-800 md:text-3xl">My Orders</h1>
-                    <span className="rounded-full bg-cyan-100 px-3 py-1 text-sm font-semibold text-cyan-700">
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">Order history</p>
+                        <h1 className="text-2xl font-extrabold text-slate-900 md:text-3xl">My Orders</h1>
+                    </div>
+                    <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-700">
                         {orderCount} orders
                     </span>
                 </div>
@@ -92,7 +94,7 @@ const MyOrdersPage = ()=>{
                             const isOpen = openedOrderId === order._id;
 
                             return (
-                                <article key={order._id} className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                                <article key={order._id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                                     <button
                                         onClick={()=>{setOpenedOrderId(isOpen ? null : order._id)}}
                                         className="w-full p-4 text-left transition hover:bg-slate-50"
@@ -116,8 +118,8 @@ const MyOrdersPage = ()=>{
 
                                     {isOpen && (
                                         <div className="border-t border-slate-200 bg-slate-50 p-4">
-                                            <div className="mb-4 rounded-lg border border-cyan-100 bg-cyan-50 p-3 text-sm text-slate-700">
-                                                <span className="font-semibold text-cyan-700">Shipping Address:</span> {order.address}
+                                            <div className="mb-4 rounded-xl border border-teal-100 bg-teal-50 p-3 text-sm text-slate-700">
+                                                <span className="font-semibold text-teal-700">Shipping Address:</span> {order.address}
                                             </div>
 
                                             <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
@@ -154,18 +156,6 @@ const MyOrdersPage = ()=>{
                     </div>
                 )}
             </section>
-
-            {showAlert && (
-                <div className={`transition-all duration-500 ease-in-out transform ${
-                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-                }`}>
-                    <Alert
-                        success={isSuccess}
-                        MainTitle={isSuccess ? "Success" : "Error"}
-                        SubTitle={subtitle}
-                    />
-                </div>
-            )}
         </>
     )
 }

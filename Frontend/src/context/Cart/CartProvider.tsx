@@ -3,7 +3,6 @@ import { CartContext } from './CartContext'
 import type { CartItemType } from '../../tyoes/CartItem';
 import { BASE_URL } from '../../constant/baseurl';
 import { useAlert } from '../../components/useAlert';
-import Alert from '../../components/Alert';
 import { useAuth } from '../Auth/AuthContext';
 
 interface CartApiResponse {
@@ -38,7 +37,7 @@ const CartProvider: FC<PropsWithChildren> = ({children})=>{
     const {token} = useAuth();
     const [cartItems , setCartItem] = useState<CartItemType[]>([]);
     const [totalAmount , setTotalAmount] = useState<number>(0);
-    const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
+    const { triggerAlert } = useAlert();
 
     useEffect(()=>{
     if(!token){
@@ -272,23 +271,9 @@ const checkoutCart = async (address:string):Promise<boolean>=>{
     }
 }
 return(
-    <>
     <CartContext.Provider value={{cartItems , totalAmount , addItemToCart, increaseItemQuantity, decreaseItemQuantity, removeItemFromCart, clearCart, checkoutCart}}>
         {children}
     </CartContext.Provider>
-
-    {showAlert && (
-    <div className={`transition-all duration-500 ease-in-out transform ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-    }`}>
-        <Alert
-            success={isSuccess}
-            MainTitle={isSuccess ? "Add to Card Success !" : "Error Adding to Card !"}
-            SubTitle={subtitle}
-        />
-    </div>
-)}
-    </>
 )
 }
 

@@ -4,12 +4,11 @@ import FormComponent from "../components/FormComponent";
 import { BASE_URL } from "../constant/baseurl";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Alert from "../components/Alert";
 import { useAlert } from "../components/useAlert";
 
  const RegisterPage = ()=>{
     
-const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
+const { triggerAlert } = useAlert();
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
@@ -64,41 +63,31 @@ setTimeout(() => {
             }, 1500);}
     return(
 <>
+<div className="mx-auto mt-8 w-[94%] max-w-5xl">
+    <section className="section-shell relative overflow-hidden rounded-3xl p-5 md:p-8">
+        <div className="absolute -left-16 -top-20 h-56 w-56 rounded-full bg-teal-200/35 blur-3xl" />
+        <div className="absolute -bottom-24 right-0 h-52 w-52 rounded-full bg-slate-300/25 blur-3xl" />
 
-<div className="flex flex-col items-center mt-8">
+        <div className="relative grid gap-6 md:grid-cols-2 md:items-center">
+            <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">Create account</p>
+                <h1 className="mt-2 text-3xl font-extrabold text-slate-900">Join Technical Store</h1>
+                <p className="mt-3 text-sm text-slate-600">
+                    Register once to track orders, save cart items, and finish checkout faster.
+                </p>
+            </div>
 
-    <div>
-<h1 className="font-semibold text-2xl">Registration</h1>
-    </div>
-
-
-<div className="border-2 border-blue-500 h-auto md:min-w-2/4 min-w-3/4 m-8 p-3 rounded-lg  ">
-
-    <form>
-
-    <FormComponent text={"Email : "} type={"email"} placeholder={"Enter Your Email Here .. "} ref={emailRef}/>
-
-    <FormComponent text={"First Name :"} type={"text"} placeholder={"Enter Your First Name Here .. "} ref={firstNameRef} />
-
-    <FormComponent text={"Last Name : "} type={"text"} placeholder={"Enter Your Last Name Here .. "} ref={lastNameRef}/>
-
-    <FormComponent text={"Password : "} type={"password"} placeholder={"Enter Your Password Here .. "} ref={passwordRef}/>
-
-    <SubmitButton text={"Sign In "} OnSubmit={OnSubmit}/> 
-  
-    </form>
-</div>
-   {showAlert && (
-    <div className={`transition-all duration-500 ease-in-out transform    ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-    }`}>
-        <Alert
-            success={isSuccess}
-            MainTitle={isSuccess ? "Success Login !" : "Error Login !"}
-            SubTitle={subtitle}
-        />
-    </div>
-)}
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-lg">
+                <form>
+                    <FormComponent text={"Email"} type={"email"} placeholder={"you@example.com"} ref={emailRef}/>
+                    <FormComponent text={"First Name"} type={"text"} placeholder={"Your first name"} ref={firstNameRef} />
+                    <FormComponent text={"Last Name"} type={"text"} placeholder={"Your last name"} ref={lastNameRef}/>
+                    <FormComponent text={"Password"} type={"password"} placeholder={"Create a secure password"} ref={passwordRef}/>
+                    <SubmitButton text={"Create Account"} OnSubmit={OnSubmit}/>
+                </form>
+            </div>
+        </div>
+    </section>
 </div>
 
 </>

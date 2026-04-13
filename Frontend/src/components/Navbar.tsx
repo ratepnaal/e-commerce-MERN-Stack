@@ -11,59 +11,34 @@ const Navbar = ()=>{
 const cartCount = cartItems.length;
 const navigate = useNavigate();
     return(
-<div className=" h-18 bg-cyan-500 rounded-3xl mx-3 my-2 hover:scale-101 duration-300 delay-150 relative z-50  ">
-          
-<div className='flex justify-between items-center px-5 py-2 '>
+<header className="sticky top-0 z-40 px-3 pt-3">
+    <div className="mx-auto flex h-20 w-full max-w-6xl items-center justify-between rounded-2xl border border-slate-200 bg-white/85 px-4 shadow-lg backdrop-blur-md md:px-6">
+        <button onClick={()=>navigate('/')} className='group flex items-center gap-3'>
+            <img src={logo} className='h-11 w-11 rounded-xl border border-slate-200 bg-white p-1 shadow-sm' alt="Technical Store logo" />
+            <div className='text-left'>
+                <p className='text-xs font-semibold uppercase tracking-[0.22em] text-teal-600'>E-commerce</p>
+                <h1 className='text-base font-bold text-slate-900 md:text-lg'>Technical Store</h1>
+            </div>
+        </button>
 
-{/*القسم اليميني (الكتابة )*/}
+        <div className='flex items-center gap-3 md:gap-4'>
+            <button
+                onClick={()=>{navigate('/cart')}}
+                className='relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-xl text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-teal-600'
+                aria-label="Open cart"
+            >
+                <FaCartPlus className='drop-shadow-sm'/>
+                {cartCount > 0 && (
+                    <span className='absolute -right-2 -top-2 min-w-5 rounded-full bg-rose-500 px-1.5 py-0.5 text-[11px] font-bold text-white shadow'>
+                        {cartCount}
+                    </span>
+                )}
+            </button>
 
-<div className='flex justify-start'>
-<button onClick={()=>navigate('/')} className='text-white hover:scale-110 transition-transform duration-200'>
-    <h1 className='md:text-xl text-lg font-extrabold text-gray-600'> Technical Store </h1>
-</button>
-</div>
-
-{/*القسم الأوسط   */}
-  <div className='flex-1 '>
-    <div className='flex justify-end text-white text-2xl'>
- <button
- onClick={()=>{navigate('/cart')}}
- className='relative hover:scale-110 transition-transform duration-200'>
-<FaCartPlus className='drop-shadow-sm'/>
-{cartCount > 0 && (
-    <span className='absolute -top-2 -right-3 min-w-5 h-5 px-1 bg-rose-500 text-white text-[11px] font-bold rounded-full flex items-center justify-center ring-2 ring-cyan-500 shadow-md'>
-        {cartCount}
-    </span>
-)}
-    </button>
+            <AppMenu/>
+        </div>
     </div>
-   
- 
-    
-   
-    
-    </div>    
-
-{/* القسم اليساري (اللوغو + المنيو  )*/}
-
-
-<div className='flex justify-end' >
-    <div className='p-2 mr-6'>
-        <AppMenu/>
-    </div>
-    
-    <img src={logo} className='p-1 md:w-21.25 w-19 ' />
-</div>
-
-<div>
-    
-</div>
-
-</div>
-        
-
-        
-</div>
+</header>
     )
 }
 

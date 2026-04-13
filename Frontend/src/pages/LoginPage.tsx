@@ -4,13 +4,12 @@ import FormComponent from "../components/FormComponent";
 import { BASE_URL } from "../constant/baseurl";
 import { useAuth } from "../context/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Alert from "../components/Alert";
 import { useAlert } from "../components/useAlert";
 
 
  const LoginPage = ()=>{
 
-    const { isSuccess, showAlert, subtitle, isVisible, triggerAlert } = useAlert();
+     const { triggerAlert } = useAlert();
     
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
@@ -61,44 +60,39 @@ return;
     }
     return(
 <>
-<div className="flex flex-col items-center mt-8">
+<div className="mx-auto mt-8 w-[94%] max-w-5xl">
+    <section className="section-shell relative overflow-hidden rounded-3xl p-5 md:p-8">
+        <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-teal-200/40 blur-3xl" />
+        <div className="absolute -bottom-20 -left-10 h-44 w-44 rounded-full bg-slate-300/30 blur-3xl" />
 
-    <div>
-<h1 className="font-semibold text-2xl">Login</h1>
-    </div>
+        <div className="relative grid gap-6 md:grid-cols-2 md:items-center">
+            <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">Welcome back</p>
+                <h1 className="mt-2 text-3xl font-extrabold text-slate-900">Log in to your account</h1>
+                <p className="mt-3 text-sm text-slate-600">
+                    Continue shopping with faster checkout and synced cart.
+                </p>
+            </div>
 
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-lg">
+                <form>
+                    <FormComponent text={"Email"} type={"email"} placeholder={"you@example.com"} ref={emailRef}/>
+                    <FormComponent text={"Password"} type={"password"} placeholder={"Enter your password"} ref={passwordRef}/>
+                    <SubmitButton text={"Log In"} OnSubmit={OnSubmit}/>
 
-<div className="border-2 border-blue-500 h-auto md:min-w-2/4 min-w-3/4 m-8 p-3 rounded-lg  ">
-
-    <form>
-
-    <FormComponent text={"Email : "} type={"email"} placeholder={"Enter Your Email Here .. "} ref={emailRef}/>
-
-    <FormComponent text={"Password : "} type={"password"} placeholder={"Enter Your Password Here .. "} ref={passwordRef}/>
-
-    <SubmitButton text={"Log In "} OnSubmit={OnSubmit}/> 
-  
-  <h5 className="text-center text-xs"> Don't Have Account ? <b></b>
-     <button onClick={()=>{navigate("/register")}}
-     className="text-blue-600 hover:scale-105"
-     > Sign in </button> </h5>
-    </form>
-   
-</div>
-
-{showAlert && (
-    <div className={`transition-all duration-500 ease-in-out transform ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-    }`}>
-        <Alert
-            success={isSuccess}
-            MainTitle={isSuccess ? "Success Login !" : "Error Login !"}
-            SubTitle={subtitle}
-        />
-    </div>
-)}
-
-
+                    <h5 className="mt-3 text-center text-xs text-slate-500">
+                        Don't have an account?
+                        <button
+                            onClick={()=>{navigate("/register")}}
+                            className="ml-1 font-semibold text-teal-700 transition hover:text-teal-800"
+                        >
+                            Register
+                        </button>
+                    </h5>
+                </form>
+            </div>
+        </div>
+    </section>
 </div>
 </>
     )

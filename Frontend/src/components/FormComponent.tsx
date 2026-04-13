@@ -9,10 +9,10 @@
  const FormComponent = ({text , type , placeholder , ref }: params)=>{
     return(
 <>
-<div className=" flex flex-col items-center mt-2 ">
-        <label className=" font-semibold text-lg text-blue-700 ">{text}</label>
+<div className="mt-4 flex flex-col gap-2">
+    <label className="text-sm font-semibold text-slate-700">{text}</label>
         <input
-         className="border-2 border-blue-300 hover:border-blue-500 p-0.5 rounded-lg shadow-2xl hover:scale-105 min-w-60 mt-5  "
+     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
          type={type}
          placeholder={placeholder}
          ref={ref}

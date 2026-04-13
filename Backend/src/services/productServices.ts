@@ -13,11 +13,14 @@ export const getAllProduct = async ()=>{
 export const seedInitialProducts = async ()=>{
 try{
     const products = [
-        {name:"Dell Precision 3550" , image:imagedellUrl , price: 400 , stock:100},
-        {name:"HP Victus" , image:imageHpUrl , price: 1399 , stock:158},
-        {name:"MacBook Pro " , image:imageMacUrl , price: 349 , stock:152},
-        {name:"Refurbished MacBook Pro " , image:imagerefurbishedurl , price: 2699 , stock:182},
-        {name:"Asus ROG Strix" , image:imageAsusuel , price: 3998 , stock:112},
+        {name:"Dell Precision 3550" , image:imagedellUrl , price: 400 , stock:100, category:"laptop"},
+        {name:"HP Victus" , image:imageHpUrl , price: 1399 , stock:158, category:"laptop"},
+        {name:"MacBook Pro " , image:imageMacUrl , price: 349 , stock:152, category:"laptop"},
+        {name:"Refurbished MacBook Pro " , image:imagerefurbishedurl , price: 2699 , stock:182, category:"laptop"},
+        {name:"Asus ROG Strix" , image:imageAsusuel , price: 3998 , stock:112, category:"laptop"},
+        {name:"iPhone 15" , image:"https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1200&q=80" , price: 1099 , stock:90, category:"mobile"},
+        {name:"Samsung Galaxy S24" , image:"https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80" , price: 999 , stock:110, category:"mobile"},
+        {name:"Google Pixel 9" , image:"https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=1200&q=80" , price: 899 , stock:105, category:"mobile"},
 
     ];
 
@@ -25,6 +28,17 @@ try{
 
     if(exictingProducts.length === 0){
         await productModel.insertMany(products);
+        return;
+    }
+
+    await productModel.updateMany(
+        { category: { $exists: false } },
+        { $set: { category: "laptop" } }
+    );
+
+    const mobileCount = await productModel.countDocuments({ category: "mobile" });
+    if (mobileCount === 0) {
+        await productModel.insertMany(products.filter((product) => product.category === "mobile"));
     }
 }
 

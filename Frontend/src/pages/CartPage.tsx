@@ -1,28 +1,28 @@
-import Alert from "../components/Alert";
-import { useAlert } from "../components/useAlert";
 import { useCart } from "../context/Cart/CartContext";
 import { useNavigate } from "react-router-dom";
 
 const CartPage = ()=>{
 const {cartItems, totalAmount, increaseItemQuantity, decreaseItemQuantity, removeItemFromCart, clearCart} = useCart();
-const { isSuccess, showAlert, subtitle, isVisible } = useAlert();
 const navigate = useNavigate();
 
 const finalTotal = totalAmount || cartItems.reduce((sum, item)=> sum + (item.unitPrice * item.quintity), 0);
 
 return(
     <>
-    <section className="mx-auto mt-10 w-[95%] max-w-6xl rounded-2xl bg-white/95 p-5 shadow-lg ring-1 ring-slate-100 md:p-7">
+    <section className="section-shell mx-auto mt-10 w-[95%] max-w-6xl rounded-3xl p-5 md:p-7">
         <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-2xl font-extrabold text-slate-800 md:text-3xl">Cart Page</h1>
+            <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">Shopping cart</p>
+                <h1 className="text-2xl font-extrabold text-slate-900 md:text-3xl">Cart Summary</h1>
+            </div>
             <div className="flex items-center gap-3">
-                <span className="rounded-full bg-cyan-100 px-3 py-1 text-sm font-semibold text-cyan-700">
+                <span className="rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-700">
                     {cartItems.length} items
                 </span>
                 {cartItems.length > 0 && (
                     <button
                         onClick={()=>{clearCart()}}
-                        className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-100"
+                        className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-100"
                     >
                         Clear Cart
                     </button>
@@ -93,12 +93,12 @@ return(
                 </div>
 
                 <div className="mt-5 flex justify-end">
-                    <div className="w-full rounded-xl bg-slate-900 p-4 text-white md:w-[320px]">
+                    <div className="w-full rounded-2xl bg-slate-900 p-4 text-white md:w-[320px]">
                         <div className="mb-2 text-sm text-slate-300">Final Total</div>
                         <div className="text-2xl font-extrabold">${finalTotal.toFixed(2)}</div>
                         <button
                             onClick={()=>{navigate('/checkout', { state: { fromCart: true } })}}
-                            className="mt-4 w-full rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-600"
+                            className="mt-4 w-full rounded-xl bg-teal-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-600"
                         >
                             Go To Checkout
                         </button>
@@ -107,18 +107,6 @@ return(
             </>
         )}
     </section>
-
-       {showAlert && (
-    <div className={`transition-all duration-500 ease-in-out transform    ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-    }`}>
-        <Alert
-            success={isSuccess}
-            MainTitle={isSuccess ? "Success Login !" : "Error Login !"}
-            SubTitle={subtitle}
-        />
-    </div>
-)}
     </>
 )
 }
