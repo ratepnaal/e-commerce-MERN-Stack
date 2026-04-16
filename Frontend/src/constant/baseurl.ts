@@ -1,1 +1,1 @@
-export const BASE_URL = "http://localhost:3001";
+export const BASE_URL = "https://e-commerce-mern-stack-backend-ujf8.onrender.com";
